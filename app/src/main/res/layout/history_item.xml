@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="20dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="2dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
+
+        <TextView
+            android:id="@+id/FoodId_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="FoodId"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:layout_margin="2dp"
+            android:textColor="@android:color/black"
+            android:layout_alignParentTop="true"
+            />
+
+        <TextView
+            android:id="@+id/FoodBreed_text"
+            android:layout_margin="2dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            android:layout_below="@+id/FoodId_text"
+            android:text="Breed"
+            android:textColor="@android:color/black"
+            android:textSize="15sp" />
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>
