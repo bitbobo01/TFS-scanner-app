@@ -1,9 +1,10 @@
 package com.example.tfsscanner.Models;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-class Treatments {
+class Treatments implements Serializable {
     public Date TreatmentDate ;
 
     public List<String> TreatmentProcess ;

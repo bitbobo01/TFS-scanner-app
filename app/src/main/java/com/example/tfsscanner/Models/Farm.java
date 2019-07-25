@@ -2,10 +2,11 @@ package com.example.tfsscanner.Models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class Farm {
+public class Farm implements Serializable {
     public int FarmId;
 
     public String Name;

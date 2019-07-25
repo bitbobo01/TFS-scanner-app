@@ -9,11 +9,11 @@ import retrofit2.Call;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface RetrofitService {
-
-    @GET("api/Farm/food/foodDetail/{foodId}")
-    Call<Food> FoodDetails(@Path("foodId") int foodId);
+    @GET("api/Staff/getFoodData")
+    Call<Food> FoodDetails(@Query("id") int foodId);
     @GET("https://api.myjson.com/bins/rl7kx")
     Call<Food> Food();
 

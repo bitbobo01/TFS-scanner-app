@@ -1,8 +1,9 @@
 package com.example.tfsscanner.Models;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Distributor {
+public class Distributor implements Serializable {
     public int DistributorId ;
 
     public String Name ;

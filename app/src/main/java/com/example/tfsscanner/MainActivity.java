@@ -24,14 +24,20 @@ import com.example.tfsscanner.Models.Food;
 import com.example.tfsscanner.RetrofitService.RetrofitService;
 import com.example.tfsscanner.RetrofitService.UnsafeOkHttpClient;
 import com.example.tfsscanner.Utils.DateDeserializer;
+import com.example.tfsscanner.Utils.LayoutAdapter;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.internal.UnsafeAllocator;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
@@ -66,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
             provider_text,
             distributor_text;
     private ActionBar nav;
-    private String url = "https://:4201/";
+    private String url = "https://192.168.1.43:4201/";
     LinkedList<Food> foodLinkedList = new LinkedList<Food>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         distributorLine = findViewById(R.id.DistributorLine);
         //check Permission camera and internet
         checkPermission();
-
+        loadHistory();
         //Get Action Bar
         nav = getSupportActionBar();
         BottomNavigationView navigationView = findViewById(R.id.bottom_navigation);
@@ -111,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 case R.id.action_history:
                     Intent intent = new Intent(MainActivity.this, History.class);
+                    intent.putExtra("history-list",foodLinkedList);
                     startActivity(intent);
                     return true;
             }
@@ -122,7 +129,6 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent,0);
     }
     private void jsonParse(Barcode barcode) {
-        url = ipconfig_text.getText().toString();
         try{
 
             int foodId =  Integer.valueOf(barcode.rawValue.substring(5));
@@ -284,6 +290,30 @@ public class MainActivity extends AppCompatActivity {
         }else {
             return "Không có";
         }
+    }
+    public void loadHistory(){
+            try {
+
+            // Mở một luồng đọc file.
+            FileInputStream in = this.openFileInput(historyData);
+
+            BufferedReader br= new BufferedReader(new InputStreamReader(in));
+
+            StringBuilder sb= new StringBuilder();
+            String s= null;
+            while((s= br.readLine())!= null)  {
+                sb.append(s);
+            }
+            //SharedPreferences sharedPreferences = getSharedPreferences("history_item",MODE_PRIVATE);
+            Gson gson = new GsonBuilder().setLenient().create();
+            String json = sb.toString();
+            Type type = new TypeToken<LinkedList<Food>>(){}.getType();
+            foodLinkedList =gson.fromJson(json,type);
+
+        } catch (Exception e) {
+            Toast.makeText(this,"Error:"+ e.getMessage(),Toast.LENGTH_SHORT).show();
+        }
+
     }
     private String checkNull(String string){
         if(string != null){

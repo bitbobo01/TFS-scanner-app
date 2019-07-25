@@ -4,10 +4,11 @@ import androidx.annotation.Nullable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class Food {
+public class Food implements Serializable {
     @SerializedName("FoodId")
     public int FoodId;
     @SerializedName("Breed")

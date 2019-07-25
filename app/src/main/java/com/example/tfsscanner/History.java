@@ -28,6 +28,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 public class History extends AppCompatActivity {
     private String historyData = "history.txt";
@@ -55,21 +56,8 @@ public class History extends AppCompatActivity {
     public void loadHistory(){
         try {
 
-            // Mở một luồng đọc file.
-            FileInputStream in = this.openFileInput(historyData);
-
-            BufferedReader br= new BufferedReader(new InputStreamReader(in));
-
-            StringBuilder sb= new StringBuilder();
-            String s= null;
-            while((s= br.readLine())!= null)  {
-                sb.append(s);
-            }
-            //SharedPreferences sharedPreferences = getSharedPreferences("history_item",MODE_PRIVATE);
-            Gson gson = new GsonBuilder().setLenient().create();
-            String json = sb.toString();
-            Type type = new TypeToken<LinkedList<Food>>(){}.getType();
-            foodLinkedList =gson.fromJson(json,type);
+            Intent intent =getIntent();
+            foodLinkedList = new LinkedList<>((List<Food>) intent.getSerializableExtra("history-list"));
             if(foodLinkedList == null){
                 foodLinkedList = new LinkedList<>();
             }

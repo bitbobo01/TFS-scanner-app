@@ -1,8 +1,9 @@
 package com.example.tfsscanner.Models;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Provider {
+public class Provider implements Serializable {
     public int ProviderId;
 
     public String Name;

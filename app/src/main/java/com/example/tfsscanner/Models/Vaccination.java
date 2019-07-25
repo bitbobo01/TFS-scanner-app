@@ -1,8 +1,9 @@
 package com.example.tfsscanner.Models;
 
+import java.io.Serializable;
 import java.util.Date;
 
-class Vaccination {
+class Vaccination implements Serializable {
     public Date VaccinationDate ;
 
     public String VaccinationType;
