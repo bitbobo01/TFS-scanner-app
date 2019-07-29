@@ -19,14 +19,31 @@ import java.util.List;
 public class LayoutAdapter extends RecyclerView.Adapter<LayoutAdapter.ViewHolder> implements Filterable {
     private List<Food> mFoodList;
     private List<Food> mFoodListFull;
-
+    private OnItemClickListener mListener;
+    public interface OnItemClickListener{
+        void onItemClick(int position);
+    }
+    public void setOnItemClickListener(OnItemClickListener listener){
+        mListener = listener;
+    }
     public static class ViewHolder extends RecyclerView.ViewHolder{
         public TextView mFoodId,mBreed;
 
-        public ViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NonNull View itemView,OnItemClickListener listener) {
             super(itemView);
             mFoodId = itemView.findViewById(R.id.FoodId_text);
             mBreed = itemView.findViewById(R.id.FoodBreed_text);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener!= null){
+                        int pos = getAdapterPosition();
+                        if (pos!=RecyclerView.NO_POSITION){
+                            listener.onItemClick(pos);
+                        }
+                    }
+                }
+            });
         }
     }
     public LayoutAdapter(List<Food> foodList) {
@@ -37,7 +54,7 @@ public class LayoutAdapter extends RecyclerView.Adapter<LayoutAdapter.ViewHolder
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.history_item,parent,false);
-        ViewHolder vh = new ViewHolder(v);
+        ViewHolder vh = new ViewHolder(v,mListener);
         return vh;
     }
 

@@ -10,17 +10,8 @@
         android:id="@+id/recycler_view"
         android:scrollbars="vertical"
         android:layout_width="match_parent"
-        android:layout_height="630dp"
-        android:layout_marginBottom="40dp"/>
-
-    <Button
-        android:id="@+id/back_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="@drawable/button_scan"
-        android:text="Back"
-        android:textColor="@color/colorBlack" />
+        android:layout_height="match_parent"
+        />
 
 </LinearLayout>
 

@@ -16,16 +16,9 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="612dp"
         android:text="Quét Mã"
         android:textColor="@color/colorBlack"
         android:textSize="30sp" />
-
-    <EditText
-        android:id="@+id/ip_config"
-        android:layout_width="304dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="25dp" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView"
@@ -33,35 +26,48 @@
         android:layout_height="565dp"
         android:layout_marginTop="75dp">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:orientation="vertical"
             >
-
             <TextView
                 android:id="@+id/FoodId_text"
+                android:layout_marginLeft="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text=" "
-                android:textSize="24sp" />
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/FoodBreed_text"
+                android:layout_marginLeft="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/FoodId_text"
                 android:text=" "
-                android:textSize="24sp" />
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/Category_text"
+                android:layout_marginLeft="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/FoodBreed_text"
                 android:text=" "
-                android:textSize="24sp" />
+                android:textSize="20sp" />
+            <ExpandableListView
+                android:layout_below="@+id/Category_text"
+                android:id="@+id/expanded_list"
+                android:dividerHeight="1dp"
+                android:layout_width="match_parent"
+                android:layout_height="500dp">
 
-            <View
+            </ExpandableListView>
+
+
+
+            <!--<View
                 android:id="@+id/FarmLine"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
@@ -159,10 +165,10 @@
                 android:layout_below="@+id/DistributorLine"
                 android:layout_alignParentBottom="true"
                 android:textSize="24sp"
-                 />
+                 />-->
 
 
-        </RelativeLayout>
+        </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
 

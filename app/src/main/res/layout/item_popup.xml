@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="350dp"
+    android:layout_height="475dp"
+    android:background="#E4F1F3"
+    android:orientation="vertical"
+    android:padding="5dp"
+    android:layout_gravity="center">
+<TextView
+    android:id="@+id/close_txt"
+    android:layout_width="30dp"
+    android:layout_height="30dp"
+    android:textColor="#000000"
+    android:text="X"
+    android:textStyle="bold"
+    android:layout_gravity="end"
+    android:gravity="center"/>
+    <TextView
+        android:id="@+id/fooid_text"
+        android:layout_marginLeft="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Số"
+        android:textSize="20sp" />
+    <TextView
+        android:id="@+id/fbreed_text"
+        android:layout_marginLeft="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/FoodId_text"
+        android:text="Breed"
+        android:textSize="20sp" />
+    <TextView
+        android:id="@+id/cate_text"
+        android:layout_marginLeft="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/FoodBreed_text"
+        android:text="Loại"
+        android:textSize="20sp" />
+    <ExpandableListView
+        android:id="@+id/expanded_list_history"
+        android:dividerHeight="1dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </ExpandableListView>
+</LinearLayout>

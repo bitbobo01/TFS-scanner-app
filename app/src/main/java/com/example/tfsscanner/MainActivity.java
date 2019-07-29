@@ -16,14 +16,17 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.tfsscanner.Models.Distributor;
 import com.example.tfsscanner.Models.Farm;
 import com.example.tfsscanner.Models.Food;
 import com.example.tfsscanner.RetrofitService.RetrofitService;
 import com.example.tfsscanner.RetrofitService.UnsafeOkHttpClient;
 import com.example.tfsscanner.Utils.DateDeserializer;
+import com.example.tfsscanner.Utils.ExpandableAdapter;
 import com.example.tfsscanner.Utils.LayoutAdapter;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
@@ -40,6 +43,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -54,23 +58,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_CAMERA_CODE = 1;
-
+    ExpandableListView expandableListView;
+    ExpandableAdapter expandableAdapter;
     private String historyData = "history.txt";
-    View farmLine,providerLine,distributorLine;
-    EditText ipconfig_text;
     TextView barcodeResult,
             foodId_text,
             foodBreed_text,
-            category_text,
-            farmName_text,
-            farmAddress_text,
-            farmFeeding_text,
-            farmVaccine_text,
-            certiDate_text,
-            certiNum_text,
-            foodSentDate_text,
-            provider_text,
-            distributor_text;
+            category_text;
+
     private ActionBar nav;
     private String url = "https://192.168.1.43:4201/";
     LinkedList<Food> foodLinkedList = new LinkedList<Food>();
@@ -83,20 +78,10 @@ public class MainActivity extends AppCompatActivity {
         foodId_text =  findViewById(R.id.FoodId_text);
         foodBreed_text = findViewById(R.id.FoodBreed_text);
         category_text = findViewById(R.id.Category_text);
-        farmName_text = findViewById(R.id.FarmName_text);
-        farmAddress_text = findViewById(R.id.FarmAddress_text);
-        farmFeeding_text = findViewById(R.id.FarmFeeding_text);
-        farmVaccine_text = findViewById(R.id.FarmVaccine_text);
-        certiDate_text = findViewById(R.id.CertiDate_text);
-        certiNum_text = findViewById(R.id.CertiNum_text);
-        foodSentDate_text = findViewById(R.id.FoodSentDate_text);
-        provider_text = findViewById(R.id.Provider_text);
-        distributor_text = findViewById(R.id.Distributor_text);
-        ipconfig_text = findViewById(R.id.ip_config);
-        //Get Line content
-        farmLine = findViewById(R.id.FarmLine);
-        providerLine = findViewById(R.id.ProviderLine);
-        distributorLine = findViewById(R.id.DistributorLine);
+
+        //Get list view
+        expandableListView =(ExpandableListView)findViewById(R.id.expanded_list);
+
         //check Permission camera and internet
         checkPermission();
         loadHistory();
@@ -159,49 +144,63 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<Food> call, Response<Food> response) {
                     if (response.body()!=null){
-                        saveHistory(response.body());
-
-                        //Set visible for line
-                        farmLine.setVisibility(View.VISIBLE);
-                        distributorLine.setVisibility(View.VISIBLE);
-                        providerLine.setVisibility(View.VISIBLE);
-
-                        //Set Food Details
                         foodId_text.setText("Mã thực phẩm: "+String.valueOf(response.body().getFoodId()));
                         foodBreed_text.setText("Giống loại: "+checkNull(response.body().getBreed()));
                         category_text.setText("Phân Loại: "+checkNull(response.body().getCategory()));
+                        saveHistory(response.body());
+                        List<String> dataHeaders = new ArrayList<>();
+                        //Farm Header
+                        dataHeaders.add("Thông tin Trang Trại");
                         //Farm Details
+                        List<String> farmInfo = new ArrayList<>();
                         if (response.body().getFarm()!=null){
-                            farmName_text.setText("Tên Trại Nuôi/Trồng: "+checkNull(response.body().getFarm().getName()));
-                            farmAddress_text.setText("Địa chỉ Nông Trại: "+checkNull(response.body().getFarm().getAddress()));
-                            farmFeeding_text.setText("Thức ăn Trại Nuôi/Trồng sử dụng: "+getListString(response.body().getFarm().getFeedings()));
-                            farmVaccine_text.setText("Vắc xin Trại Nuôi/Trồng sử dụng: "+getListString(response.body().getFarm().getVaccinations()));
-                            certiDate_text.setText("Ngày Chứng Nhận: "+checkNull(response.body().getFarm().getCertificationDate().toString()));
-                            certiNum_text.setText("Mã Chứng Nhận: "+checkNull(response.body().getFarm().getCertificationNumber()));
-                            foodSentDate_text.setText("Ngày vận chuyển thực phẩm: "+checkNull(response.body().getFarm().getFoodSentDate().toString()));
-                        }else
-                        {
-                            farmName_text.setText("Không có dữ liệu Nông Trại !!!");
+                            farmInfo.add("Tên Trại Nuôi/Trồng: "+checkNull(response.body().getFarm().getName()));
+                            farmInfo.add("Địa chỉ Nông Trại: "+checkNull(response.body().getFarm().getAddress()));
+                            farmInfo.add("Thức ăn Trại Nuôi/Trồng sử dụng: "+getListString(response.body().getFarm().getFeedings()));
+                            farmInfo.add("Vắc xin Trại Nuôi/Trồng sử dụng: "+getListString(response.body().getFarm().getVaccinations()));
+                            farmInfo.add("Ngày Chứng Nhận: "+checkNull(response.body().getFarm().getCertificationDate().toString()));
+                            farmInfo.add("Mã Chứng Nhận: "+checkNull(response.body().getFarm().getCertificationNumber()));
+                            farmInfo.add("Ngày vận chuyển thực phẩm: "+checkNull(response.body().getFarm().getFoodSentDate().toString()));
+                        }else{
+                            farmInfo.add("Không có dữ liệu trang trại");
                         }
-
+                        //Provider Header
+                        dataHeaders.add("Thông tin Nhà cung cấp");
                         //Provider Details
+                        List<String> providerInfo = new ArrayList<>();
                         if (response.body().getProvider()!=null){
+                            providerInfo.add("Nhà Cung Cấp: "+checkNull(response.body().getProvider().getName()));
+                            providerInfo.add("Địa chỉ Nhà Cung Cấp: "+checkNull(response.body().getProvider().getAddress()));
+                            providerInfo.add("Nhà Cung Cấp: "+checkNull(response.body().getProvider().getName()));
+                            providerInfo.add("Ngày nhận: "+checkNull(response.body().getProvider().getReceivedDate().toString()));
+                            providerInfo.add("Ngày Điều trị: "+checkNull(response.body().getProvider().getTreatment().getTreatmentDate().toString()));
+                            providerInfo.add("Tình trạng Điều trị: "+getListString(response.body().getProvider().getTreatment().getTreatmentProcess()));
+                            providerInfo.add("Ngày Đóng gói: "+checkNull(response.body().getProvider().getPackaging().getPackagingDate().toString()));
+                            providerInfo.add("Ngày Hết hạn : "+checkNull(response.body().getProvider().getPackaging().getEXPDate().toString()));
+                            providerInfo.add("Ngày cung cấp: "+checkNull(response.body().getProvider().getProvideDate().toString()));
 
-                            provider_text.setText("Nhà Cung Cấp: "+checkNull(response.body().getProvider().getName()));
-
-                        }else
-                        {
-                            provider_text.setText("Không có dữ liệu Nhà Cung Cấp !!!");
                         }
-
+                        else{
+                            providerInfo.add("Không có dữ liệu nhà cung cấp");
+                        }
+                        //Distributor Header
+                        dataHeaders.add("Thông tin Nhà Phân Phối");
                         //Distributor Details
+                        List<String> distributorInfo = new ArrayList<>();
                         if (response.body().getDistributor()!=null){
-                            distributor_text.setText("Nhà Phân Phối"+checkNull(response.body().getDistributor().getName()));
+                            distributorInfo.add("Nhà Phân Phối: "+checkNull(response.body().getDistributor().getName()));
+                            distributorInfo.add("Ngày nhận: "+checkNull(response.body().getDistributor().getReceivedDate().toString()));
 
-                        }else
-                        {
-                            distributor_text.setText("Không có dữ liệu Nhà Phân Phối !!!");
+                        }else {
+                            distributorInfo.add("Không có dữ liệu nhà phân phối");
                         }
+                        HashMap<String,List<String>> listDataChild = new HashMap<String,List<String>>();
+                        listDataChild.put(dataHeaders.get(0),farmInfo);
+                        listDataChild.put(dataHeaders.get(1),providerInfo);
+                        listDataChild.put(dataHeaders.get(2), distributorInfo);
+                        expandableAdapter = new ExpandableAdapter(MainActivity.this,dataHeaders,listDataChild);
+                        expandableListView.setAdapter(expandableAdapter);
+
 
                     }else
                     {
@@ -275,10 +274,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             Toast.makeText(this,"Error:"+ e.getMessage(),Toast.LENGTH_SHORT).show();
         }
-        /*SharedPreferences sharedPreferences =  getSharedPreferences("history_item",MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("food_list",json);
-            editor.apply();*/
+
     }
     private String getListString(List list){
         String listString ="";

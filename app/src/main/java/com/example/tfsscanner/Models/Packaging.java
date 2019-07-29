@@ -3,7 +3,7 @@ package com.example.tfsscanner.Models;
 import java.io.Serializable;
 import java.util.Date;
 
-class Packaging implements Serializable {
+public class Packaging implements Serializable {
     public Date EXPDate;
 
     public Date PackagingDate ;
