@@ -4,6 +4,10 @@
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application
         android:allowBackup="true"
@@ -12,16 +16,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".History"
-            android:label="TFS History">
+        <activity android:name=".Details"
+            android:label=""
+            android:parentActivityName=".History"
+            >
 
         </activity>
         <activity
+            android:name=".History"
+            android:parentActivityName=".MainActivity"
+            android:label="TFS History"></activity>
+        <activity
             android:name=".ScanBarcode"
-            android:label="TFS Scan barcode" />
+            android:label="TFS Scan barcode"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".MainActivity"
-            android:label="TFS Barcode Reader">
+            android:label=""
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.tfsscanner.R;
@@ -65,9 +66,16 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
         String headTitle = (String) getGroup(groupPosition);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(R.layout.group_view,null);
+        ImageView imgView = convertView.findViewById(R.id.group_image);
         TextView txtHeader = (TextView) convertView.findViewById(R.id.textViewHeader);
         txtHeader.setText(headTitle);
-
+        if(headTitle == "Thông tin Trang Trại" ){
+            imgView.setImageResource(R.drawable.ic_home);
+        }else if (headTitle == "Thông tin Nhà cung cấp"){
+            imgView.setImageResource(R.drawable.ic_store);
+        }else if (headTitle == "Thông tin Nhà Phân Phối"){
+            imgView.setImageResource(R.drawable.ic_airport);
+        }
         return convertView;
     }
 

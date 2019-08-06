@@ -61,8 +61,8 @@ public class LayoutAdapter extends RecyclerView.Adapter<LayoutAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Food currentFood = mFoodList.get(position);
-        holder.mBreed.setText(currentFood.getBreed());
-        holder.mFoodId.setText("Số: "+ String.valueOf(currentFood.getFoodId()));
+        holder.mBreed.setText("Thực Phẩm: "+currentFood.getBreed());
+        holder.mFoodId.setText("Mã Sô Thực Phẩm: "+ String.valueOf(currentFood.getFoodId()));
     }
 
     @Override

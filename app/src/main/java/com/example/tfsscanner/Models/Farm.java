@@ -3,6 +3,7 @@ package com.example.tfsscanner.Models;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -13,7 +14,7 @@ public class Farm implements Serializable {
 
     public String Address ;
 
-    public List<String> Feedings ;
+    public ArrayList<String> Feedings ;
 
     public List<Vaccination> Vaccinations ;
 
@@ -47,11 +48,11 @@ public class Farm implements Serializable {
         Address = address;
     }
 
-    public List<String> getFeedings() {
+    public ArrayList<String> getFeedings() {
         return Feedings;
     }
 
-    public void setFeedings(List<String> feedings) {
+    public void setFeedings(ArrayList<String> feedings) {
         Feedings = feedings;
     }
 

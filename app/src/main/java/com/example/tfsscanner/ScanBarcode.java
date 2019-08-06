@@ -4,24 +4,39 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Camera;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
+import android.widget.Toast;
 
+import com.example.tfsscanner.Models.Food;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class ScanBarcode extends AppCompatActivity {
+    View scannerLayout;
+    View scannerBar;
+    ObjectAnimator animator;
     SurfaceView cameraPreview;
     Button backButton;
     @Override
@@ -30,6 +45,40 @@ public class ScanBarcode extends AppCompatActivity {
         setContentView(R.layout.activity_scan_barcode);
         cameraPreview = (SurfaceView) findViewById(R.id.camera_preview);
         createCameraSource();
+        //Scanner overlay
+        scannerLayout = findViewById(R.id.scannerLayout);
+        scannerBar = findViewById(R.id.scannerBar);
+
+        ViewTreeObserver vto = scannerLayout.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+
+                scannerLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                    scannerLayout.getViewTreeObserver().
+                            removeGlobalOnLayoutListener(this);
+
+                } else {
+                    scannerLayout.getViewTreeObserver().
+                            removeOnGlobalLayoutListener(this);
+                }
+
+                float destination = (float)(scannerLayout.getY() +
+                        scannerLayout.getHeight());
+
+                animator = ObjectAnimator.ofFloat(scannerBar, "translationY",
+                        scannerLayout.getY(),
+                        destination);
+
+                animator.setRepeatMode(ValueAnimator.REVERSE);
+                animator.setRepeatCount(ValueAnimator.INFINITE);
+                animator.setInterpolator(new AccelerateDecelerateInterpolator());
+                animator.setDuration(3000);
+                animator.start();
+
+            }
+        });
     }
 
     private void createCameraSource() {
@@ -53,6 +102,7 @@ public class ScanBarcode extends AppCompatActivity {
                 }
                 try {
                     cameraSource.start(cameraPreview.getHolder());
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -75,20 +125,25 @@ public class ScanBarcode extends AppCompatActivity {
 
             }
 
+            boolean isScan = false;
             @Override
             public void receiveDetections(Detector.Detections<Barcode> detections) {
                 final SparseArray<Barcode> barcodes = detections.getDetectedItems();
-                if (barcodes.size() > 0) {
-                    Intent intent = new Intent(ScanBarcode.this,MainActivity.class);
-                    intent.putExtra("barcode", barcodes.valueAt(0));
-                    setResult(CommonStatusCodes.SUCCESS,intent);
-                    finish();
+                if (barcodes.size() > 0 && !isScan) {
+                    isScan = true;
+                        transfer(barcodes.valueAt(0));
 
                 }
             }
         });
 
-
+    }
+    public void transfer(Barcode barcode){
+        Intent intent = new Intent(ScanBarcode.this,Details.class);
+        intent.putExtra("barcode", barcode);
+        setResult(CommonStatusCodes.SUCCESS,intent);
+        startActivity(intent);
+        finish();
     }
 
 }
